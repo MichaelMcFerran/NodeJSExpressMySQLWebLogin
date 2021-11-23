@@ -87,4 +87,7 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+
+  // Link to find IP Address (can also find and change to local machine/host address using ipconfig or ifconfig command on linux) and Port the server is hosted on
+  console.log(`Express server listening at http://127.0.0.1:${port}`);
 }
