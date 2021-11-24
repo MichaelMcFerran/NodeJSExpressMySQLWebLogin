@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+/* www Startup Server Script
+---------------------------------------------------------------------------------------------------------
+Key Functions:
+- Startup express server
+- Establish Socket.IO connection (externalised)
+*/
 
 /**
  * Module dependencies.
