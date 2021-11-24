@@ -1,21 +1,23 @@
 extends layout
 block style_content
-  link(rel='stylesheet' href='../public/stylesheets/login.css')
+  link(rel='stylesheet' href='../public/stylesheets/register.css')
 block content  
   // Movetru navbar
   nav.navbar.navbar-dark.bg-dark
     .container-fluid
       span.navbar-brand.mb-0.h1 Tekenable Test
-      a.nav-item.nav-link(href='/register') Register
+      a.nav-item.nav-link(href='/login') Login
 
-  .login-form
-    h1 Login Form
-    form(action='auth' method='POST')
-      input(type='text' name='username' placeholder='Username' required='')
-      input(type='password' name='password' placeholder='Password' required='')
-      input(type='submit')
+  .container
+    .row
+      .register-form
+        h1 Update Biometric Details
+        form(action='registerUpdate' method='POST')
+          input(type='number' name='upperLegLength' placeholder='Choose a Username' required='')
+          input(type='number' name='upperLegWidth' placeholder='Choose a Password' required='')
+          input(type='submit')
 
-
+ 
   // Links for jQuery and Javascript file to interact with the static HTML and make dynamic
   script(src='//code.jquery.com/jquery-1.11.0.min.js')
   script(src='//code.jquery.com/jquery-migrate-1.2.1.min.js')
