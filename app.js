@@ -25,7 +25,17 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// setup logger, express, static html files, cookies etc
+// sets package to direct session constiables for users, code determines if user is logged in - seen on router.js
+app.use(
+  session({
+   secret: 'Tekenable',
+   resave: true,
+   saveUninitialized: true,
+  })
+ );
+
+// setup logger, express, static html files, cookies, favicon etc
+app.use(favicon()); // puts icons on web page
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
