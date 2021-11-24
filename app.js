@@ -17,7 +17,6 @@ var logger = require('morgan'); // provides debuggin output of http requests
 
 // creates routes variable which will direct all http requests to the desired web page.
 var Router = require('./routes/router');
-// var usersRouter = require('./routes/users'); // unnecessary, also deleted the users.js file
 
 // express is the web dev framework for handling http requests
 var app = express();
@@ -33,9 +32,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// sends any http request that begins with / to routes const above then to routes/index.js
+// sends any http request that begins with / to router const above then to routes/router.js
 app.use('/', Router);
-// app.use('/users', usersRouter); // unnecessary file
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

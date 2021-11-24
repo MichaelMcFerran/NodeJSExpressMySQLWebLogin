@@ -1,0 +1,15 @@
+extends layout
+block style_content
+  link(rel='stylesheet' href='../public/stylesheets/login.css')
+block content  
+  // Movetru navbar
+  nav.navbar.navbar-dark.bg-dark
+    .container-fluid
+      span.navbar-brand.mb-0.h1 Tekenable Test
+
+  .login-form
+    h1 Login/Register Form
+    form(action='auth' method='POST')
+      input(type='text' name='username' placeholder='Username' required='')
+      input(type='password' name='password' placeholder='Password' required='')
+      input(type='submit')
