@@ -6,12 +6,18 @@ block content
   nav.navbar.navbar-dark.bg-dark
     .container-fluid
       span.navbar-brand.mb-0.h1 Tekenable Test
-      a.nav-item.nav-link(href='/login') Login
+      a.nav-item.nav-link(href='/') Login
 
   .container
     .row
       .register-form
-        h1 Update Biometric Details
+        h1 Register your details in the form below
+        p Username field accepts aplha numeric values only
+        p user name must not already be  registered
+        p The password must have a minimum length of 8 characters and contains at least 1 number, 1 uppercase and 1 lower case letter
+        p You will get feedback when the username doesn't meet the criteria
+        p Upon submission of a valid username and password, they are persisted to a database
+        p You will get feedback that you have been registered
         form(action='registerUpdate' method='POST')
           input(type='number' name='upperLegLength' placeholder='Choose a Username' required='')
           input(type='number' name='upperLegWidth' placeholder='Choose a Password' required='')
