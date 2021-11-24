@@ -19,8 +19,8 @@ block content
         p Upon submission of a valid username and password, they are persisted to a database
         p You will get feedback that you have been registered
         form(action='registerUpdate' method='POST')
-          input(type='number' name='usernameRegister' placeholder='Choose a Username' required='')
-          input(type='number' name='passwordRegister' placeholder='Choose a Password' required='')
+          input(type='text' name='usernameRegister' placeholder='Choose a Username' required='')
+          input(type='password' name='passwordRegister' placeholder='Choose a Password' required='')
           input(type='submit')
 
  
@@ -29,4 +29,4 @@ block content
   script(src='//code.jquery.com/jquery-migrate-1.2.1.min.js')
   script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js')
   script(src='socket.io/socket.io.js')
-  script(src='../public/scripts/register.js')
+  script(src='../public/javascripts/register.js')

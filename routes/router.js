@@ -52,7 +52,7 @@ router.post('/auth', (request, response) => {
   }
  });
  
- // index router to homepage if login authentification is achieved, this is intermediate page between login and index/dashboard
+ // go to homepage if login authentification is achievef
  router.get('/index', (request, response) => {
   if (request.session.loggedin) {
    console.log(
@@ -65,6 +65,43 @@ router.post('/auth', (request, response) => {
    response.send('Please login to view this page!', request.session.username);
   }
   response.end();
+ });
+
+ /* POST user creation form from register page */
+router.post('/registerUpdate', (request, response) => {
+  // take in the form values
+  const { usernameRegister, passwordRegister} = request.body;
+
+  let distinctUser; // Bool check var used for distinct users
+  let feedback; // string that is passed to front end to give user feedback on issues with the details they are trying to register
+
+  /*User story requirement 2 from README.MD 
+  first check if there already exists a entry for this userID, to decide if we need to update or insert into
+  make query based on dB result*/
+  const checkEntryQuery = `SELECT DISTINCT username FROM tekenabletest.user WHERE userName= '${usernameRegister}'`;
+  dbConnection.query(checkEntryQuery, (error, results) => {
+   console.log(results);
+   if (results.length > 0) {
+    distinctUser = false;
+    // feedback = encodeURIComponent(`The desired username: ${usernameRegister} is already registered. Please enter a unique username of 1-8 aphanumeric characters`)
+    feedback = encodeURIComponent('The desired username: ${usernameRegister} is already registered. Please enter a unique username of 1-8 aphanumeric characters')
+    // send back to register page and update they must enter a unique value
+    // response.redirect('/?register=' + feedback);
+    response.redirect('/register?valid=' + feedback); //sends details to register page, now to grab and display to user on front end or just use session vars?
+   } else {
+    distinctUser = true;
+   }
+  //  dbConnection.query(updateOrInsertUserBiometricsQuery, (err, result) => {
+  //   if (err) {
+  //    throw err;
+  //   } else {
+  //    console.log(result);
+  //   }
+  // }); // end of nested dB insert/update query
+  }); // end of outer dB query check
+ 
+  // send back to same page once updated or inserted - BROKEN
+  // response.redirect('/register');
  });
 
  // Logout and end session
