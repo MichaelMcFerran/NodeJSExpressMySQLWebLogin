@@ -54,7 +54,6 @@ router.post('/auth', (request, response) => {
  
  // index router to homepage if login authentification is achieved, this is intermediate page between login and index/dashboard
  router.get('/index', (request, response) => {
-   // broken
   if (request.session.loggedin) {
    console.log(
     request.session.username // grabs username so user can be addressed in the subsequent web pages
@@ -66,6 +65,17 @@ router.post('/auth', (request, response) => {
    response.send('Please login to view this page!', request.session.username);
   }
   response.end();
+ });
+
+ // Logout and end session
+router.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+   if (err) {
+    console.log(err);
+   } else {
+    res.redirect('/');
+   }
+  });
  });
 
 module.exports = router;

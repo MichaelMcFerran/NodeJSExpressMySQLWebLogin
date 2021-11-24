@@ -1,5 +1,10 @@
 extends layout
 
 block content
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+    a.navbar-brand(href='https://www.tekenable.ie/') Tekenable
+      a.nav-item.nav-link(href='/logout') Logout
+
   h1= title
   p Welcome to #{title}
+
