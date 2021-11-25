@@ -37,7 +37,7 @@ router.get('/registerUpdater', function(req, res, next) {
   // nested if/else statements for different conditionals to match user story
   if(req.session.usernameTaken){
     // Send feedback to user that they can't register a username that is already taken
-    res.send(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of 1-8 aphanumeric characters`);
+    res.send(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of aphanumeric characters`);
     //clear Session Variables
     clearSession();
     
@@ -206,7 +206,6 @@ router.get('/logout', (req, res) => {
  */
  function isUserAlphaNum(string) {
   let code, i, len;
-
   for (i = 0, len = string.length; i < len; i++) {
     code = string.charCodeAt(i);
     // if values aren't within decimal/mapped range they are not alphanumeric
@@ -226,12 +225,13 @@ function isPassValid(passString) {
 
   let stringLength = passString.length;
   let passCode, i, len;
-  let numberCount, upperCaseCount, lowerCaseCount;
-
+  let numberCount = 0, upperCaseCount = 0, lowerCaseCount = 0;
+  console.log(stringLength);
   if (stringLength >= 8 && stringLength <= 50){
     // nested for loop only check if length is within range
     for (i = 0, len = passString.length; i < len; i++) {
       passCode = passString.charCodeAt(i);
+      console.log(passCode);
       //add to a count for Uppercase, Lowercase, number check
       if (passCode > 47 && passCode < 58){
         numberCount++; // numeric (0-9) count add one
@@ -241,7 +241,7 @@ function isPassValid(passString) {
         lowerCaseCount++; // lowercase (a-z) count add one
       }
     } // end of for loop
-
+     console.log(`Number Count : ${numberCount}, Uppercase Count : ${upperCaseCount}, Lowercase Count : ${lowerCaseCount}`)
     // After counting values only return true if there's a minimum of one of each type
     let expression;
     if (numberCount >= 1 && upperCaseCount >= 1 && lowerCaseCount >= 1){
@@ -264,9 +264,6 @@ function isPassValid(passString) {
     // strLenValid = false;
     return false;
   }
-  // for (i = 0, len = passString.length; i < len; i++) {
-  //   passCode = p
-  // }
 }
 
 module.exports = router;
