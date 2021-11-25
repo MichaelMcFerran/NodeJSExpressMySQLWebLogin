@@ -2,7 +2,7 @@ extends layout
 block style_content
   link(rel='stylesheet' href='../public/stylesheets/register.css')
 block content  
-  // Movetru navbar
+  // Navigation Bar
   nav.navbar.navbar-dark.bg-dark
     .container-fluid
       span.navbar-brand.mb-0.h1 Tekenable Test
@@ -24,9 +24,12 @@ block content
           input(type='submit')
 
         //- h2 #{session_usernameTaken} Change to update on js file only when session var triggered
-        
+        h2#feedback
         <script type="text/javascript">
-            console.log('hey')
+            // update register psot feedback from router
+            jQuery(document).ready(function () {
+                // jQuery('#feedback').append("<b>hey</b>");
+            });
         </script>
 
   // Links for jQuery and Javascript file to interact with the static HTML and make dynamic
