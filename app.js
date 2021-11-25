@@ -35,7 +35,7 @@ app.use(
  );
 
 // setup logger, express, static html files, cookies, favicon etc
-app.use(favicon()); // puts icons on web page
+app.use(favicon()); // puts icons on web pages
 app.use('/public', express.static('public')); // public is web root
 app.use(logger('dev'));
 app.use(express.json());
