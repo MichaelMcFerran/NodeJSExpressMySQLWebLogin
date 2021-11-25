@@ -20,7 +20,7 @@ As an end user, I want to be able to sign up to the web application using only a
 ### No need to address user authentication or authorisation, passwords may be stored as plain text
 
 ## Configexample.ini
-This file is intented as a demonstration file for us in connecting to your own database
+This file is intented as a demonstration file for use in connecting to your own database
 Change values in this file to your own database parameters and server parameters
 then save as config.ini in the root directory of the repo. The server files can then use this file
 to grab your dB parameters and setup a connection as seen on dBconfig.js that any file can then access
