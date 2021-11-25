@@ -30,7 +30,7 @@ to query the local database.
 ## Database
 The database used is a simple mySQL server that is manipulated with MySQL Workbench. A schema was created and The only table within it is one called 'user'.
 The columns set up were,
-*   idUser - Set to AutoIncrement on each new user registered, NOT NUll (must have a value) and as the Primary Key
+*   idUser - Set to Auto Increment on each new user registered, NOT NUll (must have a value) and as the Primary Key
 *   username - Set to NOT NUll (must have a value)
 *   password - Set to NOT NUll (must have a value)
 Therefore, the MYSQL script used to login and check if a username has been registered already, are written to suit this table format.
