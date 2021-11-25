@@ -52,10 +52,8 @@ router.get('/registerUpdater', function(req, res, next) {
     // Clear session Variables
     clearSession();
   } else if (req.session.alphaNumeric){
-    console.log('in it');
     // checks password is valid only when values are alphanumeric, so then send feedback that password values aren't valid
     if(!(req.session.passwordValid)){
-      console.log('in here');
       res.send('You have entered an invalid password. Please enter a minimum of 8 characters including 1 uppercase, 1 lowercase and 1 number');
       // Clear session Variables
       clearSession();
@@ -263,7 +261,6 @@ function isPassValid(passString) {
     return expression;
 
   } else {
-    // strLenValid = false;
     return false;
   }
 }
