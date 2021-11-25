@@ -1,5 +1,6 @@
 /*
 This file handles all page routings and HTTP requests
+This is where the User story requirements are met using jQuery, AJAX calls and the dB
 It is in a separate file from app.js to help readability
 */
 
@@ -14,18 +15,53 @@ router.get('/', function(req, res, next) {
 
 /* GET register page. */
 router.get('/register', function(req, res, next) {
-  // if distinct user sess var is true, let user know
-  if(req.session.distinctUser === false){
-    // move to front end - used for debugging
-    console.log(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of 1-8 aphanumeric characters`)
-    res.render('register', { title: 'Register Page',
-    session_usernameTaken: req.session.usernameTaken
-  });
-  } else {
-    res.render('register', { title: 'Register Page' });
-  }
+  // // if distinct user sess var is true, let user know
+  // if(req.session.distinctUser === false){
+  //   // move to front end - used for debugging
+  //   console.log(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of 1-8 aphanumeric characters`)
+  //   res.render('register', { title: 'Register Page',
+  //   session_usernameTaken: req.session.usernameTaken
+  // });
+  // } else {
+  //   res.render('register', { title: 'Register Page' });
+  // }
+
+  res.render('register', { title: 'Register Page' });
 
 });
+
+/* GET register feedback for register page. Send it to the Front end JS page */
+router.get('/registerUpdater', function(req, res, next) {
+ // only send feedback if required - session var thing may not work here
+ if(req.session.sendFeedBack === true){
+  // nested if statements for different conditionals to match user story
+
+   /* 
+    session destroy function used to clear session variables for use during
+    user registration + requirement checking
+   */
+   function  clearSession() {
+  req.session.destroy((err) => {
+    if (err) {
+    console.log(err);
+    }
+  });
+}
+  if(req.session.usernameTaken){
+    res.send(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of 1-8 aphanumeric characters`);
+    //clear Session Variables
+    clearSession();
+    
+  } else if (req.session.userRegistered){
+    // Send feedback to user that they have registered, with details being stored in dB and can now login 
+    res.send(`You have registered, login with your username : ${req.session.userName} `);
+    // Clear session Variables
+    clearSession();
+  }
+
+ } // end of send feedback
+}); // end of register updater
+
 
 // Login Authentification
 // login script will check the MySQL dB if details match
@@ -78,37 +114,57 @@ router.post('/auth', (request, response) => {
  });
 
  /* POST user creation form from register page */
-router.post('/registerUpdate', (request, response) => {
+ router.post('/registerUpdate', (request, response) => {
+
+/* Test changing to get rather than post 
+GET user creation form from register page */
+// router.get('/registerUpdate', (request, response) => {
   // take in the form values
   const { usernameRegister, passwordRegister} = request.body;
 
+  // let feedback; // string that is passed to front end to give user feedback on issues with the details they are trying to register
+
   /*User story requirement 2 from README.MD 
-  first check if there already exists a entry for this userID, to decide if we need to update or insert into
+  first check if there already exists a entry for this userID, to decide if we can insert into
   make query based on dB result*/
-  const checkEntryQuery = `SELECT DISTINCT username FROM tekenabletest.user WHERE userName= '${usernameRegister}'`;
-  dbConnection.query(checkEntryQuery, (error, results) => {
+  const checkDistinctQuery = `SELECT DISTINCT username FROM tekenabletest.user WHERE userName= '${usernameRegister}'`;
+  dbConnection.query(checkDistinctQuery, (error, results) => {
    console.log(results);
    if (results.length > 0) {
     request.session.distinctUser = false // session var for register page to check
     request.session.usernameTaken = usernameRegister // session var for register page to check
-    response.redirect('/register');
+    request.session.sendFeedBack = true // trigger to send in /registerUpdater, deletes once session is destroyed 
+    response.redirect('/register'); // Triggers the update by reloading the page
+
+    // //test send json
+    // feedback = encodeURIComponent('The desired username: ${usernameRegister} is already registered. Please enter a unique username of 1-8 aphanumeric characters')
+    // response.send(feedback);
    } else {
-    request.session.distinctUser = true;
+    request.session.distinctUser = true; // used to allow username to be registered
    }
-  //  dbConnection.query(updateOrInsertUserBiometricsQuery, (err, result) => {
-  //   if (err) {
-  //    throw err;
-  //   } else {
-  //    console.log(result);
-  //   }
-  // }); // end of nested dB insert/update query
-  }); // end of outer dB query check
+   
+   // if all conditions are met update dB 
+   if (request.session.distinctUser){
+    const registerUserQuery = `INSERT INTO tekenabletest.user (username, password) VALUES ('${usernameRegister}', '${passwordRegister}')`;
+    dbConnection.query(registerUserQuery, (err, result) => {
+    if (err) {
+     throw err;
+    } else{
+      request.session.userRegistered = true; // to let the user know that their account has been created
+      request.session.userName = usernameRegister; // send to user on front end with the feedback
+      request.session.sendFeedBack = true // trigger to send in /registerUpdater, deletes once session is destroyed
+      response.redirect('/register'); // Triggers the update by reloading the page
+    } 
+    }); // end of nested dB insert query
+   }
+
+  }); // end of outer dB query check and conditional checks
  
   // send back to same page once updated or inserted - BROKEN
   // response.redirect('/register');
- });
+ });// end of register update form post request
 
- // Logout and end session
+ // Logout, end session and return to homepage
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
    if (err) {
