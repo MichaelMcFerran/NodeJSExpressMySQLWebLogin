@@ -18,7 +18,7 @@ const dbParam = {
  database: databaseSettings.db_name, 
 };
 
-// Begin connection to dB as pool of connections (CRUCIAL) to allow continuous data inputs asynchronously(useful later)
+// Begin connection to dB as a pool of connections to allow continuous data inputs asynchronously
 // Note: help for reconnection from https://github.com/mysqljs/mysql/issues/1478
 const dbConnection = mysql.createPool(dbParam);
 // - Error listener for any database connection errors

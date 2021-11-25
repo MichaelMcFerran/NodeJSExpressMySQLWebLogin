@@ -12,20 +12,16 @@ block content
     .row
       .register-form
         h1 Register your details in the form below
-        p Username field accepts alpha numeric values only
-        p user name must not already be  registered
-        p The password must have a minimum length of 8 characters and contains at least 1 number, 1 uppercase and 1 lower case letter
+        p The username field accepts alpha numeric values only
+        p The username must not already be registered
+        p The password must have a minimum length of 8 characters and contain at least 1 number, 1 uppercase and 1 lowercase letter
         p You will get feedback when the username doesn't meet the criteria
         p Upon submission of a valid username and password, they are persisted to a database
         p You will get feedback that you have been registered
-        //- form(action='registerUpdate' method='POST')
-        //- Changing to get ???
         form(action='registerUpdate' method='POST')
           input(type='text' name='usernameRegister' placeholder='Choose a Username' required='')
           input(type='password' name='passwordRegister' placeholder='Choose a Password' required='')
           input(type='submit')
-
-        //- h2 #{session_usernameTaken} Change to update on js file only when session var triggered
         label(action='/registerUpdater' for='#feedback') 
         h1#feedback
 
