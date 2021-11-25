@@ -1,11 +1,12 @@
 // - The following JS file is to begin dB Connection and allow all Js files to access the dB
 // - using mySQL scripts. It is removed from app.js to reduce it's breadth of functions
 
-const fs = require('fs');
-const ini = require('ini');
+const fs = require('fs'); // This module allows file system access
+const ini = require('ini'); // This module allows interaction with configuration files of type .ini
 
-const config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
-const databaseSettings = config.database_settings;
+//Read config file using the fs and ini modules
+const config = ini.parse(fs.readFileSync('./config.ini', 'utf-8')); 
+const databaseSettings = config.database_settings; // Get the hidden database settings from the config variable
 
 // set mysql dB dependency
 const mysql = require('mysql');

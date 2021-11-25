@@ -1,7 +1,7 @@
 /* App.js Middleware Setup File
 --------------------------------------------------------- 
 Key Functions:
-- Setup express app variable
+- Setup express app functions
 - Controls web page routing by sending all page requests beginning with / to routes/router.js
 */
 
@@ -25,7 +25,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// sets package to direct session constiables for users, code determines if user is logged in - seen on router.js
+// sets package to allow session variables for users, their use is seen on router.js
 app.use(
   session({
    secret: 'Tekenable',
@@ -36,12 +36,12 @@ app.use(
 
 // setup logger, express, static html files, cookies, favicon etc
 app.use(favicon()); // puts icons on web pages
-app.use('/public', express.static('public')); // public is web root
+app.use('/public', express.static('public')); // sets public folder as the root directory that web pages look for files
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); // sets file path for any static files that are server
 
 // sends any http request that begins with / to router const above then to routes/router.js
 app.use('/', Router);
