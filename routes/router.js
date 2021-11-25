@@ -9,12 +9,22 @@ const dbConnection = require('../dbconfig').dbCon; // - import db config file an
 
 /* GET login page as home page. */
 router.get('/', function(req, res, next) {
-  res.render('login', { title: 'Express' });
+  res.render('login', { title: 'Login Page' });
 });
 
 /* GET register page. */
 router.get('/register', function(req, res, next) {
-  res.render('register', { title: 'Express' });
+  // if distinct user sess var is true, let user know
+  if(req.session.distinctUser === false){
+    // move to front end - used for debugging
+    console.log(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of 1-8 aphanumeric characters`)
+    res.render('register', { title: 'Register Page',
+    session_usernameTaken: req.session.usernameTaken
+  });
+  } else {
+    res.render('register', { title: 'Register Page' });
+  }
+
 });
 
 // Login Authentification
@@ -72,9 +82,6 @@ router.post('/registerUpdate', (request, response) => {
   // take in the form values
   const { usernameRegister, passwordRegister} = request.body;
 
-  let distinctUser; // Bool check var used for distinct users
-  let feedback; // string that is passed to front end to give user feedback on issues with the details they are trying to register
-
   /*User story requirement 2 from README.MD 
   first check if there already exists a entry for this userID, to decide if we need to update or insert into
   make query based on dB result*/
@@ -82,14 +89,11 @@ router.post('/registerUpdate', (request, response) => {
   dbConnection.query(checkEntryQuery, (error, results) => {
    console.log(results);
    if (results.length > 0) {
-    distinctUser = false;
-    // feedback = encodeURIComponent(`The desired username: ${usernameRegister} is already registered. Please enter a unique username of 1-8 aphanumeric characters`)
-    feedback = encodeURIComponent('The desired username: ${usernameRegister} is already registered. Please enter a unique username of 1-8 aphanumeric characters')
-    // send back to register page and update they must enter a unique value
-    // response.redirect('/?register=' + feedback);
-    response.redirect('/register?valid=' + feedback); //sends details to register page, now to grab and display to user on front end or just use session vars?
+    request.session.distinctUser = false // session var for register page to check
+    request.session.usernameTaken = usernameRegister // session var for register page to check
+    response.redirect('/register');
    } else {
-    distinctUser = true;
+    request.session.distinctUser = true;
    }
   //  dbConnection.query(updateOrInsertUserBiometricsQuery, (err, result) => {
   //   if (err) {
