@@ -33,5 +33,6 @@ The columns set up were,
 *   idUser - Set to Auto Increment on each new user registered, NOT NUll (must have a value) and as the Primary Key
 *   username - Set to NOT NUll (must have a value)
 *   password - Set to NOT NUll (must have a value)
-Therefore, the MYSQL script used to login and check if a username has been registered already, are written to suit this table format.
+
+The MYSQL script used to login and check if a username has been registered already, are written to suit this table format.
 The MySQL scripts on the router.js page are designed to be used with this database format specifically and probably would require a rewrite to suit another database if required.
