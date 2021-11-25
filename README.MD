@@ -21,10 +21,10 @@ The following are the user requirements,
 ### No need to address user authentication or authorisation, passwords may be stored as plain text
 
 ## Configexample.ini
-This file is intented as a demonstration file for use in connecting to your own database
-Change the values in this file to your own database parameters and server parameters
+This file is intented as a demonstration file for use in connecting to your own database.
+Change the values in this file to your own database parameters and server parameters,
 then save as config.ini in the root directory of the repo. The server files can then use this file
-to grab your dB parameters and setup a connection as seen on dBconfig.js. Then any file can access them
+to grab your dB parameters and setup a connection as seen on dBconfig.js. So now any file can access them
 to query the local database. 
 
 ## Database
