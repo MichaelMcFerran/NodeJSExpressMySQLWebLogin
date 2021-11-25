@@ -15,39 +15,28 @@ router.get('/', function(req, res, next) {
 
 /* GET register page. */
 router.get('/register', function(req, res, next) {
-  // // if distinct user sess var is true, let user know
-  // if(req.session.distinctUser === false){
-  //   // move to front end - used for debugging
-  //   console.log(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of 1-8 aphanumeric characters`)
-  //   res.render('register', { title: 'Register Page',
-  //   session_usernameTaken: req.session.usernameTaken
-  // });
-  // } else {
-  //   res.render('register', { title: 'Register Page' });
-  // }
-
   res.render('register', { title: 'Register Page' });
 
 });
 
 /* GET register feedback for register page. Send it to the Front end JS page */
 router.get('/registerUpdater', function(req, res, next) {
- // only send feedback if required - session var thing may not work here
+ // only send feedback if required
  if(req.session.sendFeedBack === true){
-  // nested if statements for different conditionals to match user story
-
    /* 
     session destroy function used to clear session variables for use during
     user registration + requirement checking
    */
    function  clearSession() {
-  req.session.destroy((err) => {
-    if (err) {
-    console.log(err);
-    }
-  });
-}
+    req.session.destroy((err) => {
+      if (err) {
+      console.log(err);
+      }
+    });
+   }
+  // nested if/else statements for different conditionals to match user story
   if(req.session.usernameTaken){
+    // Send feedback to user that they can't register a username that is already taken
     res.send(`The desired username: ${req.session.usernameTaken} is already registered. Please enter a unique username of 1-8 aphanumeric characters`);
     //clear Session Variables
     clearSession();
@@ -57,7 +46,23 @@ router.get('/registerUpdater', function(req, res, next) {
     res.send(`You have registered, login with your username : ${req.session.userName} `);
     // Clear session Variables
     clearSession();
+  } else if (!(req.session.alphaNumeric)){
+    // Send feedback to user that the entered values aren't alphanumeric
+    res.send(`The characters entered are not alphanumeric(0-9,a-z,A-Z). Change the following username and retry : ${req.session.userName}`);
+    // Clear session Variables
+    clearSession();
+  } else if (req.session.alphaNumeric){
+    // checks password is valid only when values are alphanumeric, so then send feedback that password values aren't valid
+    if(!(req.session.passwordValid)){
+      res.send('You have entered an invalid password. Please enter a minimum of 8 characters including 1 uppercase, 1 lowercase and 1 number');
+      // Clear session Variables
+      clearSession();
+    }  
   }
+  // else if (!(req.session.passwordValid)){
+  //   res.send('You have entered an invalid password. Please enter a minimum of 8 characters including 1 uppercase, 1 lowercase and 1 number');
+  //   clearSession();
+  // }
 
  } // end of send feedback
 }); // end of register updater
@@ -136,15 +141,34 @@ GET user creation form from register page */
     request.session.sendFeedBack = true // trigger to send in /registerUpdater, deletes once session is destroyed 
     response.redirect('/register'); // Triggers the update by reloading the page
 
-    // //test send json
-    // feedback = encodeURIComponent('The desired username: ${usernameRegister} is already registered. Please enter a unique username of 1-8 aphanumeric characters')
-    // response.send(feedback);
    } else {
     request.session.distinctUser = true; // used to allow username to be registered
-   }
-   
-   // if all conditions are met update dB 
-   if (request.session.distinctUser){
+    // Now check other User Story requirements
+    // Check if username value is AlphaNumeric
+    // console.log(isUserAlphaNum(usernameRegister));
+    if (isUserAlphaNum(usernameRegister) === true){
+      console.log('username is alphanumeric');
+      request.session.alphaNumeric = true; // allow user to be registered
+      // Nested Check if password is between 1-8 characters in length and contains 1 uppercase + 1 lower case character
+      if (isPassValid(passwordRegister) === true){
+        console.log('password is at least 8 characters with 1 Uppercase, 1 Lowercase and 1 number');
+        request.session.passwordValid = true; // allow user to be registered
+      } else{
+        console.log('password is not 8 characters min with 1 uppercase, 1 lowercase and 1 number');
+        request.session.passwordValid = false; // deny registering of user
+
+      } // end of nested if else
+    } else{
+      console.log('username is not alphanumeric');
+      request.session.alphaNumeric = false; // deny registering of user
+    }
+
+    // Check if password is between 1-8 characters in length and contains 1 uppercase + 1 lower case character
+
+   }// end of nested else 
+
+   // if all conditions are met/true update dB 
+   if (request.session.distinctUser && request.session.alphaNumeric && request.session.passwordValid){
     const registerUserQuery = `INSERT INTO tekenabletest.user (username, password) VALUES ('${usernameRegister}', '${passwordRegister}')`;
     dbConnection.query(registerUserQuery, (err, result) => {
     if (err) {
@@ -174,5 +198,75 @@ router.get('/logout', (req, res) => {
    }
   });
  });
+
+ /*
+ Function to check for alphanumeric values - user requirement charcodeAt labels current iteration 
+ string value as mapped to unicode table in decimal format then we check for Alphanumeric values
+ returning true if values are with the range. Unicode table - https://www.tamasoft.co.jp/en/general-info/unicode-decimal.html
+ */
+ function isUserAlphaNum(string) {
+  let code, i, len;
+
+  for (i = 0, len = string.length; i < len; i++) {
+    code = string.charCodeAt(i);
+    // if values aren't within decimal/mapped range they are not alphanumeric
+    if (!(code > 47 && code < 58) && // numeric (0-9)
+        !(code > 64 && code < 91) && // uppercase (A-Z)
+        !(code > 96 && code < 123)) { // lowercase (a-z)
+      return false;
+    }
+  }
+  return true;
+}
+
+/*
+Function to check for a minimum password length of 8 characters, with 1 number, 1 uppercase value and 1 lowercase
+*/
+function isPassValid(passString) {
+
+  let stringLength = passString.length;
+  let passCode, i, len;
+  let numberCount, upperCaseCount, lowerCaseCount;
+
+  if (stringLength >= 8 && stringLength <= 50){
+    // nested for loop only check if length is within range
+    for (i = 0, len = passString.length; i < len; i++) {
+      passCode = passString.charCodeAt(i);
+      //add to a count for Uppercase, Lowercase, number check
+      if (passCode > 47 && passCode < 58){
+        numberCount++; // numeric (0-9) count add one
+      } else if (passCode > 64 && passCode < 91) {
+        upperCaseCount++; // uppercase (A-Z) count add one
+      } else if (passCode > 96 && passCode < 123) {
+        lowerCaseCount++; // lowercase (a-z) count add one
+      }
+    } // end of for loop
+
+    // After counting values only return true if there's a minimum of one of each type
+    let expression;
+    if (numberCount >= 1 && upperCaseCount >= 1 && lowerCaseCount >= 1){
+      // return true;
+      expression = true;
+      if(expression){
+        return true;
+      }
+  
+    } else {
+      // return false;
+      expression = false;
+      if(expression === false){
+        return false;
+      }
+    } 
+    return expression;
+
+  } else {
+    // strLenValid = false;
+    return false;
+  }
+  // for (i = 0, len = passString.length; i < len; i++) {
+  //   passCode = p
+  // }
+}
 
 module.exports = router;
