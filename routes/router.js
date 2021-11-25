@@ -52,18 +52,18 @@ router.get('/registerUpdater', function(req, res, next) {
     // Clear session Variables
     clearSession();
   } else if (req.session.alphaNumeric){
+    console.log('in it');
     // checks password is valid only when values are alphanumeric, so then send feedback that password values aren't valid
     if(!(req.session.passwordValid)){
+      console.log('in here');
       res.send('You have entered an invalid password. Please enter a minimum of 8 characters including 1 uppercase, 1 lowercase and 1 number');
       // Clear session Variables
       clearSession();
+    } else {
+      // Clear session Variables
+      clearSession();
     }  
-  }
-  // else if (!(req.session.passwordValid)){
-  //   res.send('You have entered an invalid password. Please enter a minimum of 8 characters including 1 uppercase, 1 lowercase and 1 number');
-  //   clearSession();
-  // }
-
+  } // end of alphanumeric else if
  } // end of send feedback
 }); // end of register updater
 
@@ -103,7 +103,7 @@ router.post('/auth', (request, response) => {
   }
  });
  
- // go to homepage if login authentification is achievef
+ // go to homepage if login authentification is achieved
  router.get('/index', (request, response) => {
   if (request.session.loggedin) {
    console.log(
@@ -113,7 +113,7 @@ router.post('/auth', (request, response) => {
    // put session grabbing vars here specific to user
    response.render('index', { title: "" + request.session.username + "'s Hub" }); // render page only on successful login
   } else {
-   response.send('Please login to view this page!', request.session.username);
+   response.send('Please login to view this page!');
   }
   response.end();
  });
@@ -126,8 +126,6 @@ GET user creation form from register page */
 // router.get('/registerUpdate', (request, response) => {
   // take in the form values
   const { usernameRegister, passwordRegister} = request.body;
-
-  // let feedback; // string that is passed to front end to give user feedback on issues with the details they are trying to register
 
   /*User story requirement 2 from README.MD 
   first check if there already exists a entry for this userID, to decide if we can insert into
@@ -156,14 +154,18 @@ GET user creation form from register page */
       } else{
         console.log('password is not 8 characters min with 1 uppercase, 1 lowercase and 1 number');
         request.session.passwordValid = false; // deny registering of user
+        request.session.sendFeedBack = true // trigger to send to /registerUpdater get request, deletes once session is destroyed 
+        response.redirect('/register'); // Triggers the update by reloading the page
+
 
       } // end of nested if else
     } else{
       console.log('username is not alphanumeric');
       request.session.alphaNumeric = false; // deny registering of user
-    }
+      request.session.sendFeedBack = true // trigger to send to /registerUpdater get request, deletes once session is destroyed 
+      response.redirect('/register'); // Triggers the update by reloading the page
 
-    // Check if password is between 1-8 characters in length and contains 1 uppercase + 1 lower case character
+    }
 
    }// end of nested else 
 
@@ -176,7 +178,7 @@ GET user creation form from register page */
     } else{
       request.session.userRegistered = true; // to let the user know that their account has been created
       request.session.userName = usernameRegister; // send to user on front end with the feedback
-      request.session.sendFeedBack = true // trigger to send in /registerUpdater, deletes once session is destroyed
+      request.session.sendFeedBack = true; // trigger to send in /registerUpdater, deletes once session is destroyed
       response.redirect('/register'); // Triggers the update by reloading the page
     } 
     }); // end of nested dB insert query
