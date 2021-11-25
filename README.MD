@@ -9,9 +9,10 @@ But first, the Technology stack used included -
 *   Bootstrap stylesheets for a mobile first website
 
 ## User Story
-As an end user, I want to be able to sign up to the web application using only a username and password
-1. Username field accepts alpha numeric values only
-2. Username is not already registered
+As an end user, I want to be able to sign up to the web application using only a username and password. 
+The following are the user requirements, 
+1. The Username field accepts alpha numeric values only
+2. The Username is not already registered
 3. The password has a minimum length of 8 characters and contains at least 1 number, 1 uppercase and 1 lower case letter
 4. The user gets feedback when the username doesn't meet the criteria
 5. Upon submission of a valid username and password, the user data is persisted to a database
